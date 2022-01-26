@@ -1,0 +1,41 @@
+version: "3"
+services:
+  item-stock-app:
+    image: item-service-app
+    build: ./
+    ports:
+      - "8072:8080"
+    container_name: item-container
+    links:
+      - mongodb:app_db
+#    depends_on:
+#      - mongodb
+    networks:
+      - shared-net
+
+  mongodb:
+    image: mongo
+    ports:
+      - "27019:27017"
+    container_name: mongo-server
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=root
+#      - MONGO_INITDB_ROOT_PASSWORD=root
+#      - MONGO_INITDB_DATABASE=supermarket
+    networks:
+      - shared-net
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express-ui
+    ports:
+      - "8081:8081"
+    environment:
+#      - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+#      - ME_CONFIG_MONGODB_ADMINPASSWORD=root
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+    networks:
+      - shared-net
+networks:
+  shared-net:
+    driver: bridge
